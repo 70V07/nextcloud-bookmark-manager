@@ -26,3 +26,9 @@ jobs:
     - name: Build app
       run: |
         electron-packager . --platform=win32 --arch=x64
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: nextcloud-bookmark-manager-windows
+        path: ./Nextcloud Bookmark Manager-win32-x64/
