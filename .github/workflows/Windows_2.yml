@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: |
+        npm install -g electron-packager
+        npm install -g asar
+        npm install
+
+    - name: Build app
+      run: |
+        gulp build
+        npm prune --production
+        electron-packager . --asar=true --electron-version=10.1.5 --overwrite --platform=win32 --arch=x64 --icon=dist/assets/icon/icon.icns --ignore="app-source|gulpfile\\.js|README\\.md" --prune=false --out=build
+        npm install
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: nextcloud-bookmark-manager-windows
+        path: ./Nextcloud Bookmark Manager-win32-x64/
